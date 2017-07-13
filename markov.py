@@ -65,7 +65,7 @@ def make_text(chains):
     return " ".join(words)
     
 
-def tweet(text):
+def tweet(chains):
     # Use Python os.environ to get at environmental variables
     # Note: you must run `source secrets.sh` before running this file
     # to make sure these environmental variables are set.
@@ -73,25 +73,41 @@ def tweet(text):
         consumer_key=os.environ['TWITTER_CONSUMER_KEY'],
         consumer_secret=os.environ['TWITTER_CONSUMER_SECRET'],
         access_token_key=os.environ['TWITTER_ACCESS_TOKEN_KEY'],
-        access_token_secret=os.environ['TWITTER_ACCESS_TOKEN_SECRET'])   
-    #print api.VerifyCredentials()
-    status = api.PostUpdate(text)
-    print "twitter is happy"
+        access_token_secret=os.environ['TWITTER_ACCESS_TOKEN_SECRET']) 
 
+    tweet_command = raw_input("Enter to tweet again [q to quit]")
+
+    while tweet_command == "":
+        text = make_text(chains)
+        #print api.VerifyCredentials()
+        status = api.PostUpdate(text)
+        print status.text
+        tweet_command = raw_input("Enter to tweet again [q to quit]")
+        if tweet_command == 'q':
+            break
    
 
 # Get the filenames from the user through a command line prompt, ex:
 # python markov.py green-eggs.txt shakespeare.txt
-filenames = sys.argv[1:]
+
 
 # Open the files and turn them into one long string
-text = open_and_read_file(filenames)
+
 
 # Get a Markov chain
-chains = make_chains(text)
-random_text = make_text(chains)
-# Your task is to write a new function tweet, that will take chains as input
-print len(random_text)
-print random_text
-tweet(random_text)
 
+
+# Your task is to write a new function tweet, that will take chains as input
+
+
+
+def tweet_controller():
+    filenames = sys.argv[1:]
+    text = open_and_read_file(filenames)
+    
+
+    chains = make_chains(text)
+    
+    tweet(chains)
+
+print tweet_controller()
